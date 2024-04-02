@@ -7,18 +7,24 @@ const App = () => {
   const [newUserData, setNewUserData] = useState({
     UserID: "",
     Name: "",
-    Telefon: "",
-    Email: "",
+    Kontaktinformationen:{
+      Telefon: "",
+      Email: "",
+    },
     Passwort: "",
   });
+  
 
   const fetchUsers = async () => {
     try {
       const response = await axios.get("http://localhost:3000/users");
       setUsers(response.data);
+      console.log(response.data)
     } catch (error) {
       console.error("Fehler beim Abrufen der Benutzer:", error);
     }
+    
+
   };
 
   const fetchAccounts = async () => {
