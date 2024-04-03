@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const App = () => {
   const [users, setUsers] = useState([]);
@@ -10,8 +11,9 @@ const App = () => {
     Kontaktinformationen:{
       Telefon: "",
       Email: "",
+      Passwort: "",
     },
-    Passwort: "",
+    
   });
   
 
@@ -65,6 +67,27 @@ const App = () => {
     }
   };
 
+  const deleteUserById = async (userId) => {
+    try {
+      await axios.delete(`http://localhost:3000/users/${userId}`);
+      console.log(`User with ID ${userId} deleted`);
+      fetchUsers(); // Refresh the users list after deletion
+    } catch (error) {
+      console.error("Fehler beim Löschen des Benutzers:", error);
+    }
+  };
+
+  // Function to delete an account by ID
+  const deleteAccountById = async (accountId) => {
+    try {
+      await axios.delete(`http://localhost:3000/accounts/${accountId}`);
+      console.log(`Account with ID ${accountId} deleted`);
+      fetchAccounts(); // Refresh the accounts list after deletion
+    } catch (error) {
+      console.error("Fehler beim Löschen des Kontos:", error);
+    }
+  };
+
   return (
     <div>
       <h1>Benutzer</h1>
@@ -94,7 +117,7 @@ const App = () => {
           <input
             type="text"
             name="Telefon"
-            value={newUserData.Telefon}
+            value={newUserData.Kontaktinformationen.Telefon}
             onChange={handleChange}
           />
         </label>
@@ -104,7 +127,7 @@ const App = () => {
           <input
             type="email"
             name="Email"
-            value={newUserData.Email}
+            value={newUserData.Kontaktinformationen.Email}
             onChange={handleChange}
           />
         </label>
@@ -114,7 +137,7 @@ const App = () => {
           <input
             type="password"
             name="Passwort"
-            value={newUserData.Passwort}
+            value={newUserData.Kontaktinformationen.Passwort}
             onChange={handleChange}
           />
         </label>
@@ -123,6 +146,7 @@ const App = () => {
       </form>
       <ul>
         {users.map((user) => (
+          <div class="card">
           <li key={user.UserID}>
             <div>
               <strong>Name:</strong> {user.Name}
@@ -133,13 +157,21 @@ const App = () => {
             <div>
               <strong>Email:</strong> {user.Kontaktinformationen.Email}
             </div>
+            <div>
+            <button type="button" class="btn btn-warning">Update</button>
+            </div>
+            <div>
+            <button type="button" class="btn btn-danger" onClick={deleteUserById(user.UserID)}>Delete</button>
+            </div>
           </li>
+          </div>
         ))}
       </ul>
 
       <h1>Konten</h1>
       <ul>
         {accounts.map((account) => (
+          <div class="card">
           <li key={account.KontoID}>
             <div>
               <strong>Typ:</strong> {account.Typ}
@@ -150,7 +182,14 @@ const App = () => {
             <div>
               <strong>User:</strong> {account.User}
             </div>
+            <div>
+            <button type="button" class="btn btn-warning">Update</button>
+            </div>
+            <div>
+            <button type="button" class="btn btn-danger">Delete</button>
+            </div>
           </li>
+          </div>
         ))}
       </ul>
     </div>
