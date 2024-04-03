@@ -5,17 +5,17 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 const App = () => {
   const [users, setUsers] = useState([]);
   const [accounts, setAccounts] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [newUserData, setNewUserData] = useState({
     UserID: "",
     Name: "",
-    Kontaktinformationen:{
+    Kontaktinformationen: {
       Telefon: "",
       Email: "",
       Passwort: "",
     },
-    
   });
-  
+
 
   const fetchUsers = async () => {
     try {
@@ -25,7 +25,7 @@ const App = () => {
     } catch (error) {
       console.error("Fehler beim Abrufen der Benutzer:", error);
     }
-    
+
 
   };
 
@@ -88,6 +88,15 @@ const App = () => {
     }
   };
 
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+  
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+  
+
   return (
     <div>
       <h1>Benutzer</h1>
@@ -147,23 +156,94 @@ const App = () => {
       <ul>
         {users.map((user) => (
           <div class="card">
-          <li key={user.UserID}>
-            <div>
-              <strong>Name:</strong> {user.Name}
-            </div>
-            <div>
-              <strong>Telefon:</strong> {user.Kontaktinformationen.Telefon}
-            </div>
-            <div>
-              <strong>Email:</strong> {user.Kontaktinformationen.Email}
-            </div>
-            <div>
-            <button type="button" class="btn btn-warning">Update</button>
-            </div>
-            <div>
-            <button type="button" class="btn btn-danger" onClick={deleteUserById(user.UserID)}>Delete</button>
-            </div>
-          </li>
+            <li key={user.UserID}>
+              <div>
+                <strong>Name:</strong> {user.Name}
+              </div>
+              <div>
+                <strong>Telefon:</strong> {user.Kontaktinformationen.Telefon}
+              </div>
+              <div>
+                <strong>Email:</strong> {user.Kontaktinformationen.Email}
+              </div>
+              <div>
+                <button type="button" className="btn btn-warning" onClick={() => openModal()}>Update</button>
+              </div>
+              {isModalOpen && (
+                <div className="modal show" style={{ display: "block" }} tabIndex="-1">
+                  <div className="modal-dialog">
+                    <div className="modal-content">
+                      <div className="modal-header">
+                        <h5 className="modal-title">Update User</h5>
+                        <button type="button" className="close" onClick={closeModal}>
+                          <span>&times;</span>
+                        </button>
+                      </div>
+                      <div className="modal-body">
+                        <form id="editUserForm">
+                        <label>
+          UserID:
+          <input
+            type="text"
+            name="UserID"
+            value={newUserData.UserID}
+            onChange={handleChange}
+          />
+        </label>
+        <br />
+        <label>
+          Name:
+          <input
+            type="text"
+            name="Name"
+            value={newUserData.Name}
+            onChange={handleChange}
+          />
+        </label>
+        <br />
+        <label>
+          Telefon:
+          <input
+            type="text"
+            name="Telefon"
+            value={newUserData.Kontaktinformationen.Telefon}
+            onChange={handleChange}
+          />
+        </label>
+        <br />
+        <label>
+          Email:
+          <input
+            type="email"
+            name="Email"
+            value={newUserData.Kontaktinformationen.Email}
+            onChange={handleChange}
+          />
+        </label>
+        <br />
+        <label>
+          Passwort:
+          <input
+            type="password"
+            name="Passwort"
+            value={newUserData.Kontaktinformationen.Passwort}
+            onChange={handleChange}
+          />
+        </label>
+                        </form>
+                      </div>
+                      <div className="modal-footer">
+                        <button type="button" className="btn btn-secondary" onClick={closeModal}>Cancel</button>
+                        <button type="button" className="btn btn-primary" onClick={() => {/* Handle form submission */ }}>Save changes</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+              <div>
+                <button type="button" class="btn btn-danger" onClick={() => deleteUserById(user.UserID)}>Delete</button>
+              </div>
+            </li>
           </div>
         ))}
       </ul>
@@ -172,23 +252,23 @@ const App = () => {
       <ul>
         {accounts.map((account) => (
           <div class="card">
-          <li key={account.KontoID}>
-            <div>
-              <strong>Typ:</strong> {account.Typ}
-            </div>
-            <div>
-              <strong>Saldo:</strong> {account.Saldo} {account.Währung}
-            </div>
-            <div>
-              <strong>User:</strong> {account.User}
-            </div>
-            <div>
-            <button type="button" class="btn btn-warning">Update</button>
-            </div>
-            <div>
-            <button type="button" class="btn btn-danger">Delete</button>
-            </div>
-          </li>
+            <li key={account.KontoID}>
+              <div>
+                <strong>Typ:</strong> {account.Typ}
+              </div>
+              <div>
+                <strong>Saldo:</strong> {account.Saldo} {account.Währung}
+              </div>
+              <div>
+                <strong>User:</strong> {account.User}
+              </div>
+              <div>
+                <button type="button" className="btn btn-warning" onClick={() => openModal(user)}>Update</button>
+              </div>
+              <div>
+                <button type="button" class="btn btn-danger" onClick={() => deleteAccountById(account.KontoID)}>Delete</button>
+              </div>
+            </li>
           </div>
         ))}
       </ul>
